@@ -1,0 +1,122 @@
+--12
+
+--1. Numele, prenumele, codul de angajat si salariul, angajatiilor care lucreaza la un restaurant, care au salariul mai mare decat salariul mediu al 
+-- restaurantului in care lucreaza si restaurantul este detinut de proprietarul cu numele Victor sau Martinez.
+select nume, prenume, cod_angajat, salariu
+from angajat_res a1
+where a1.salariu > ( select avg(salariu) 
+                    from angajat_res a2 join restaurant r on a2.cod_restaurant = r.cod_restaurant join proprietar p on p.cod_proprietar = r.cod_proprietar
+                    where lower(p.nume) like 'victor' OR lower(p.nume) like 'martinez'
+                    group by a2.cod_restaurant
+                    having a1.cod_restaurant = a2.cod_restaurant);
+-- am folosit punctul a) in intregime, aproape tot punctul c) doar ca nu am facut subcereri nesincronizate in clauza de having si putin din punctul e)
+
+
+--2. Sa se selecteze numele, prenumele, codul restaurantului si salariul angajatiilor care lucreaza intr-un restaurant si au salariul minim din acel restaurant.
+select a.nume, a.cod_restaurant, a.salariu
+from angajat_res a, (select min(salariu) sal, cod_restaurant
+                    from angajat_res 
+                    group by cod_restaurant) minim
+where minim.sal = a.salariu and minim.cod_restaurant = a.cod_restaurant; 
+
+-- am folosit punctul b)
+
+--3. Sa se selecteze restaurantul cu salariul total maxim, al carui proprietar are profitul mai mare decat 20000 si restaurantul are descriere de meniu.
+-- Prin salariu total intelegem, suma tuturor salariilor angajatiilor care lucreaza in acel restaurant.
+select max(sum(salariu))
+from angajat_res a join restaurant r on a.cod_restaurant = r.cod_restaurant
+group by r.cod_restaurant
+having r.cod_restaurant in (select r.cod_restaurant
+                            from  restaurant r join proprietar p on p.cod_proprietar = r.cod_proprietar join meniu m on m.cod_restaurant = r.cod_restaurant
+                            where descriere_meniu is not null and profit > 2000);
+-- am folosit punctul c)
+
+-- Problema 3 recorectata, folosirea corecta a lui having:
+-- Sa se afiseze angajatii care au cele mai multe comenzi
+
+select count(*), nume, prenume, a.cod_ang_liv
+from angajat_livrari a join livrare l on a.cod_ang_liv = l.cod_ang_liv
+group by a.cod_ang_liv, nume, prenume
+having count(*) =(  select max(count(*))
+                    from angajat_livrari a join livrare l on a.cod_ang_liv = l.cod_ang_liv
+                    group by a.cod_ang_liv);
+
+--^^^^^^^^^^^^^^^ Varianta Corecta ^^^^^^^^^^^^^^
+
+--4. Sa se selecteze codul restaurantului si numarul de angajati_res al fiecarui restaurant(care are angajati) care au fost angajati in anul 2014, 2015, 2016, respectiv 2017 si care au codul restaurantului mai mare decat 102.
+-- Sa se ordoneze totul crescator, dupa codul_restaurantului
+
+with aux as (select data_inceput, a.cod_restaurant
+    from angajat_res a join restaurant r on a.cod_restaurant = r.cod_restaurant
+    where r.cod_restaurant > 102)
+select  cod_restaurant,
+        sum(nvl(decode(to_char(data_inceput, 'yyyy'), '2014', 1),0)) "Anul 2014",
+        sum(nvl(decode(to_char(data_inceput, 'yyyy'), '2015', 1),0)) "Anul 2015",
+        sum(nvl(decode(to_char(data_inceput, 'yyyy'), '2016', 1),0)) "Anul 2016",
+        sum(nvl(decode(to_char(data_inceput, 'yyyy'), '2017', 1),0)) "Anul 2017"
+from aux
+group by cod_restaurant
+order by cod_restaurant;
+
+-- am folosit punctele  d) si f)
+
+--5.Sa se selecteze numele, prenumele, numele restaurantului in care lucreaza, data angajarii, ultima zi a lunii din care data_inceput face parte si data actuala
+--  pentru angajatii care lucreaza la un restaurant condus de proprietarul cu numele 'Victor' sau 'Martinez',
+--  cu o coloana aditionala in care sa scrie "DA" daca angajatul a fost angajat dupa anul 2015 si "NU" daca a fost angajat inainte.
+
+select a.nume, a.prenume, nume_restaurant, to_char(data_inceput,'yyyy-mm-dd') "data angajare", last_day(data_inceput), sysdate, case when to_char(data_inceput, 'yyyy') >= '2015' then 'Da' else 'Nu' end "Dupa 2015"
+from angajat_res a join restaurant r on a.cod_restaurant = r.cod_restaurant join proprietar p on p.cod_proprietar = r.cod_proprietar
+where lower(p.nume) = 'victor' or upper(p.nume) = 'MARTINEZ';
+
+-- am folosit punctul e)
+
+
+
+
+--13
+
+-- 1. Sa se modifice vanzarile saptamanale la valoarea de 10000 pentru fiecare restaurant care are nume de meniu.
+
+update restaurant
+set vanzari_saptamanale = 10000
+where cod_restaurant in (select r.cod_restaurant
+                         from restaurant r join meniu m on r.cod_restaurant = m.cod_restaurant
+                        where descriere_meniu is not null); 
+                        
+-- 2. Sa se stearga livrarile care a caror comanda a fost mai scumpa de 170 de lei
+
+delete from livrare l
+where l.cod_comanda in (select cod_comanda
+                        from comanda
+                        where pret > 170);
+                        
+-- 3. Sa se adauge inca 5000 la profitul proprietarilor care au restaurant de tip 'Mare'
+
+update proprietar p1
+set profit = profit + 5000
+where 'mare' in (select lower(tip_restaurant)
+                from restaurant r join proprietar p2 on p2.cod_proprietar = r.cod_proprietar
+                where p1.cod_proprietar = p2.cod_proprietar);
+                     
+create or replace view angajati_si_restaurant as ( select a.cod_angajat, r.cod_restaurant, a.nume, a.prenume, a.nr_telefon, a.email, a.cod_job, a.data_inceput, a.salariu,  r.nume_restaurant
+                                        from angajat_res a join restaurant r on a.cod_restaurant = r.cod_restaurant
+                                        where r.cod_restaurant = 100);
+                                        
+select *
+from angajati_si_restaurant;
+
+insert into angajati_si_restaurant(cod_angajat, cod_restaurant, nume, prenume, nr_telefon, email, cod_job, data_inceput, salariu, nume_restaurant)
+values(300, 400, 'ABBA', 'CHICHICITA', '07123412', 'victor.fugulin@s.unibuc.ro',103,to_date('2020-10-10', 'yyyy-mm-dd'), 7000, 'Franciza Central Perk');
+                                        
+select * from user_updatable_columns
+where lower(table_name) = 'angajati_si_restaurant';
+
+-- Modificare clauza having, recorectare pentru problema 3:
+-- Sa se afiseze angajatii care au cele mai multe comenzi
+
+select count(*), nume, prenume, a.cod_ang_liv
+from angajat_livrari a join livrare l on a.cod_ang_liv = l.cod_ang_liv
+group by a.cod_ang_liv, nume, prenume
+having count(*) =(  select max(count(*))
+                    from angajat_livrari a join livrare l on a.cod_ang_liv = l.cod_ang_liv
+                    group by a.cod_ang_liv);
