@@ -1,0 +1,329 @@
+create sequence secventa_100
+start with 100
+increment by 1
+maxvalue 999;
+--drop sequence secventa_100;
+
+create table PROPRIETAR(
+cod_proprietar number(2) constraint pk_cod_proprietar primary key,
+nume varchar2(20) not null,
+prenume varchar2(20) not null,
+nr_telefon number(12) not null constraint telefon_unic unique,
+email varchar2(50) not null constraint email_unic unique,
+profit number(7) default 0 
+);
+
+insert into PROPRIETAR(cod_proprietar, nume, prenume, nr_telefon, email, profit) values (10, 'Victor', 'Fugulin', 787645044, 'victor.fugulin@gmail.com', 35000);
+insert into PROPRIETAR(cod_proprietar, nume, prenume, nr_telefon, email, profit) values (11, 'Joey', 'Mary', 5551234567, 'mary.jones@gmail.com', 27500);
+insert into PROPRIETAR(cod_proprietar, nume, prenume, nr_telefon, email, profit) values (12, 'Luigi', 'Ahmed', 9998887777, 'ahmed.patel@gmail.com', 18500);
+insert into PROPRIETAR(cod_proprietar, nume, prenume, nr_telefon, email, profit) values (13, 'Petrova', 'Elena', 7775551234, 'elena.petrova@gmail.com', 16200);
+insert into PROPRIETAR(cod_proprietar, nume, prenume, nr_telefon, email, profit) values (14, 'Martinez', 'Juan', 1234567890, 'juan.martinez@gmail.com', 25800);
+
+
+create table RESTAURANT(
+cod_restaurant number(3) constraint pk_cod_restaurant primary key,
+nume_restaurant varchar2(50) not null constraint nume_unic unique,
+vanzari_saptamanale number(6) default 0,
+nr_telefon number(12) not null constraint telefon_fix_unic unique,
+tip_restaurant varchar2(50) not null,
+cod_proprietar number(2),
+constraint fk_proprietar foreign key(cod_proprietar) references proprietar(cod_proprietar) on delete cascade
+);
+
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Timisoara', 9800, 0255557777, 'Mic', 14);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Brasov', 10200, 0266665555, 'Mediu', 14);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Iasi', 9400, 0277776666, 'Mic', 13);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Constanta', 8900, 0299994444, 'Mediu', 12);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Bucuresti', 12700, 0287883331, 'Mare', 11);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Topoloveni', 6800, 0787645044, 'Mic', 10);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Baneasa', 9230, 078764321, 'Mic', 14);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant, cod_proprietar) values (secventa_100.nextval, 'Franciza Afi', 3800, 073264321, 'Mediu', 10);
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant) values (secventa_100.nextval, 'Franciza Vivo Mall', 5200, 0787324321, 'Mare');
+insert into RESTAURANT(cod_restaurant, nume_restaurant, vanzari_saptamanale, nr_telefon, tip_restaurant) values (secventa_100.nextval, 'Franciza Plaza', 7000, 0725134321, 'Mediu');
+
+create table LOCATIE(
+cod_locatie number(4) constraint pk_cod_locatie primary key,
+strada varchar2(30) not null,
+nr_strada number(5)not null,
+cod_restaurant number(3) constraint fk_restaurant_unic unique,
+constraint fk_cod_restaurant foreign key(cod_restaurant) references restaurant(cod_restaurant) on delete cascade
+);
+
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1000, 'Strada Victoriei', 10, 100);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1001, 'Bulevardul Unirii', 225, 101);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1002, 'Strada Mihai Viteazu', 15, 102);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1003, 'Calea Dorobantilor', 530, 103);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1004, 'Bulevardul Eroilor', 120, 104);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1005, 'Strada Avram Iancu', 18, 105);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1006, 'Bulevardul Independentei', 40, 106);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1007, 'Strada Ion Creanga', 12, 107);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1008, 'Bulevardul Traian', 22, 108);
+insert into LOCATIE(cod_locatie, strada, nr_strada, cod_restaurant) values (1009, 'Strada Horea', 17, 109);
+insert into LOCATIE(cod_locatie, strada, nr_strada) values (1021, 'Calea Bucuresti', 126);
+insert into LOCATIE(cod_locatie, strada, nr_strada) values (1022, 'Ion Luca Caragiale', 1);
+insert into LOCATIE(cod_locatie, strada, nr_strada) values (1023, 'Ion Mincu', 40);
+
+create table JOB(
+cod_job number(3) constraint pk_cod_job primary key,
+denumire_job varchar(30) not null constraint nume_job_unic unique,
+salariu_minim number(5) not null,
+salariu_maxim number(5) not null);
+
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (100, 'Bucatar sef', 6000, 12000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (101, 'Sous Chef', 5000, 10000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (102, 'Manager Restaurant', 5500, 11000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (103, 'Chelner/Chelnerita', 3000, 6000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (104, 'Barman/Barmanita', 3200, 6400);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (105, 'Bucatar adjunct', 3500, 7000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (106, 'Spalator de Vase', 2500, 5000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (107, 'Gazda', 2800, 5600);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (108, 'Manager General Restaurant', 8000, 15000);
+insert into JOB(cod_job, denumire_job, salariu_minim, salariu_maxim) values (109, 'Manager de Marketing', 7500, 14000);
+insert into job (cod_job, denumire_job, salariu_minim, salariu_maxim)values (110, 'Manager Transport', 3500, 5000);
+insert into job (cod_job, denumire_job, salariu_minim, salariu_maxim)values (111, 'Sofer Livrare', 2000, 3000);
+insert into job (cod_job, denumire_job, salariu_minim, salariu_maxim)values (112, 'Gestionar Depozit', 2500, 4000);
+insert into job (cod_job, denumire_job, salariu_minim, salariu_maxim)values (113, 'Sofer Marfa', 2500, 3500);
+insert into job (cod_job, denumire_job, salariu_minim, salariu_maxim)values (114, 'Coordonator Transport Marfa', 3000, 4500);
+
+create table Angajat_Res(
+cod_angajat number(3) constraint pk_cod_angajat primary key,
+nume varchar2(20) not null,
+prenume varchar2(20) not null,
+salariu number(5) not null,
+email varchar2(50) not null constraint email_ang_unic unique,
+nr_telefon number(12) not null constraint nrtel_ang_unic unique,
+cod_manager number(3),
+data_inceput date not null,
+constraint fk_cod_manager foreign key(cod_manager) references angajat_res(cod_angajat),
+cod_job number(3) not null,
+constraint fk_cod_job foreign key(cod_job) references job(cod_job) on delete cascade,
+cod_restaurant number(3) not null,
+constraint fk2_cod_restaurant foreign key(cod_restaurant) references restaurant(cod_restaurant) on delete cascade
+);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(100, 'Popescu', 'Ion', 7000, 'popescu.ion@gmail.com', 720123456, null, TO_DATE('2012-01-15', 'YYYY-MM-DD'), 102, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(101, 'Ionescu', 'Maria', 4000, 'ionescu.maria@gmail.com', 720234567, 100, TO_DATE('2004-08-13', 'YYYY-MM-DD'), 103, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(102, 'Pop', 'Andrei', 3200, 'pop.andrei@gmail.com', 720345678, 100, TO_DATE('2003-04-10', 'YYYY-MM-DD'), 104, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(103, 'Constantinescu', 'Ana', 8000, 'const.ana@gmail.com', 720456789, 100, TO_DATE('2000-02-20', 'YYYY-MM-DD'), 100, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(104, 'Dumitrescu', 'Alex', 2800, 'dumi.alex@gmail.com', 720567890, 100, TO_DATE('2007-12-12', 'YYYY-MM-DD'), 106, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(105, 'Stan', 'Elena', 6000, 'stan.elena@gmail.com', 720678901, 103, TO_DATE('2006-07-21', 'YYYY-MM-DD'), 101, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(106, 'Munteanu', 'Cristian', 5500, 'munteanu.cris@gmail.com', 720789012, 103, TO_DATE('2020-11-08', 'YYYY-MM-DD'), 105, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(107, 'Georgescu', 'Laura', 7000, 'georg.laura@gmail.com', 720890123, 100, TO_DATE('2013-11-13', 'YYYY-MM-DD'), 107, 100);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(108, 'Vasilescu', 'Mihai', 9200, 'vasi.mihai@gmail.com', 720901234, null, TO_DATE('2009-09-17', 'YYYY-MM-DD'), 102, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(109, 'Iordache', 'Ana', 7800, 'ior.ana@gmail.com', 73463456, 108, TO_DATE('2005-10-10', 'YYYY-MM-DD'), 100, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(110, 'Popa', 'Catalin', 3400, 'popa.catalin@gmail.com', 7203124567, 108, TO_DATE('2017-03-25', 'YYYY-MM-DD'), 103, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(111, 'Dragomir', 'Diana', 4800, 'drago.diana@gmail.com', 720234678, 108, TO_DATE('2000-02-12', 'YYYY-MM-DD'), 104, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(112, 'Stanciu', 'Razvan', 6500, 'stan.razvan@gmail.com', 720534789, 109, TO_DATE('2007-12-12', 'YYYY-MM-DD'), 101, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(113, 'Nistor', 'Adriana', 5400, 'nistor.adriana@gmail.com', 762347890, 109, TO_DATE('2013-02-14', 'YYYY-MM-DD'), 105, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(114, 'Popescu', 'Andreea', 7900, 'popescu.andreea@gmail.com', 722368901, null, TO_DATE('2014-03-20', 'YYYY-MM-DD'), 102, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(115, 'Ionescu', 'Marian', 7200, 'ion.marian@gmail.com', 7207234512, 114, TO_DATE('2015-04-05', 'YYYY-MM-DD'), 100, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(116, 'Constantin', 'Diana', 5300, 'const.diana@gmail.com', 726234123, 115, TO_DATE('2016-05-10', 'YYYY-MM-DD'), 101, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(117, 'Stoica', 'Radu', 3700, 'stoica.radu@gmail.com', 720623234, 114, TO_DATE('2017-06-15', 'YYYY-MM-DD'), 103, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(118, 'Moldovan', 'Cristina', 3200, 'mold.cristina@gmail.com', 72014156, 114, TO_DATE('2017-07-20', 'YYYY-MM-DD'), 103, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(119, 'Dumitru', 'Gabriel', 4800, 'dumi.gabriel@gmail.com', 7272367, 114, TO_DATE('2013-08-25', 'YYYY-MM-DD'), 104, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(120, 'Iordache', 'Elena', 7600, 'ior.elena@gmail.com', 729923478, 114, TO_DATE('2014-09-30', 'YYYY-MM-DD'), 107, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(121, 'Georgescu', 'Mihai', 7200, 'georg.mihai@gmail.com', 720412439, 115, TO_DATE('2015-10-05', 'YYYY-MM-DD'), 105, 104);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(122, 'Popa', 'Ana', 8000, 'popa.ana@gmail.com', 72532290, null, TO_DATE('2016-11-10', 'YYYY-MM-DD'), 102, 105);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(123, 'Vasilescu', 'Cristian', 7000, 'vasi.cris@gmail.com', 72023151, null, TO_DATE('2017-12-15', 'YYYY-MM-DD'), 102, 106);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(124, 'Voiculescu', 'Niculae', 9000, 'voicu.nicu@gmail.com', 72353151, null, TO_DATE('2017-12-15', 'YYYY-MM-DD'), 102, 101);
+insert into angajat_res (cod_angajat, nume, prenume, salariu, email, nr_telefon, cod_manager, data_inceput, cod_job, cod_restaurant) values(125, 'Badescu', 'Stefan', 7000, 'bad.stef@gmail.com', 72323551, null, TO_DATE('2017-12-15', 'YYYY-MM-DD'), 102, 102);
+
+create table istoric_job(
+cod_istoric number(3) constraint pk_cod_istoric primary key,
+data_inceput date not null,
+data_final date not null,
+nume varchar2(20) not null,
+prenume varchar2(20) not null,
+nume_restaurant varchar(50) not null,
+cod_job number(3) not null,
+constraint fk2_cod_job foreign key(cod_job) references job(cod_job) on delete cascade
+);
+
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (100, to_date('1999-01-01', 'YYYY-MM-DD'), to_date('2004-12-31', 'YYYY-MM-DD'), 'Popescu', 'Ion', 'Franciza Topoloveni', 102);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (102, to_date('2000-02-15', 'YYYY-MM-DD'), to_date('2002-06-30', 'YYYY-MM-DD'), 'Ionescu', 'Maria', 'Franciza Timisoara', 103);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (103, to_date('1999-01-01', 'YYYY-MM-DD'), to_date('2004-12-31', 'YYYY-MM-DD'), 'Stoian', 'Ionut', 'Franciza Timisoara', 100);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (104, to_date('2000-02-15', 'YYYY-MM-DD'), to_date('2005-06-30', 'YYYY-MM-DD'), 'Balan', 'Maria', 'Franciza Timisoara', 101);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (105, to_date('2001-03-20', 'YYYY-MM-DD'), to_date('2006-09-30', 'YYYY-MM-DD'), 'Radulescu', 'Andrei', 'Franciza Topoloveni', 102);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (106, to_date('2002-04-10', 'YYYY-MM-DD'), to_date('2007-12-31', 'YYYY-MM-DD'), 'Ilie', 'Ana', 'Franciza Topoloveni', 103);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (107, to_date('2003-05-05', 'YYYY-MM-DD'), to_date('2008-10-31', 'YYYY-MM-DD'), 'Dobre', 'Alex', 'Franciza Bucuresti', 104);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (108, to_date('2004-06-01', 'YYYY-MM-DD'), to_date('2009-12-15', 'YYYY-MM-DD'), 'Cretu', 'Elena', 'Franciza Bucuresti', 105);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (109, to_date('2005-07-15', 'YYYY-MM-DD'), to_date('2010-02-28', 'YYYY-MM-DD'), 'Marin', 'Cristian', 'Franciza Bucuresti', 106);
+insert into istoric_job (cod_istoric, data_inceput, data_final, nume, prenume, nume_restaurant, cod_job)values (110, to_date('2006-08-10', 'YYYY-MM-DD'), to_date('2011-04-30', 'YYYY-MM-DD'), 'Alexandrescu', 'Laura', 'Franciza Bucuresti', 107);
+
+create table angajat_livrari(
+cod_ang_liv number(3) constraint pk_cod_ang_liv primary key,
+nume varchar2(20) not null,
+prenume varchar2(20) not null,
+salariu number(5) not null,
+vehicul varchar(20),
+email varchar2(50) not null,
+nr_telefon number(12) not null,
+cod_manager number(3),
+constraint fk_cod_manager_liv foreign key(cod_manager) references angajat_livrari(cod_ang_liv) on delete cascade,
+cod_job number(3) not null,
+constraint  fk_cod_job_liv foreign key(cod_job) references job(cod_job) on delete cascade);
+
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, email, nr_telefon, cod_manager, cod_job)values (200, 'Popescu', 'Andrei', 5000, 'popescu.andrei@gmail.com', 720123456, null, 110);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (201, 'Ionescu', 'Maria', 3000, 'Dacia', 'ionescu.maria@gmail.com', 720234567, 200, 111);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (202, 'Ionescu', 'Maria', 3000, 'BMW', 'ionescu.maria@gmail.com', 720234567, 200, 111);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (203, 'Constantinescu', 'Radu', 3500, 'Bicicleta', 'const.radu@gmail.com', 720345678, 200, 111);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, email, nr_telefon, cod_manager, cod_job)values (204, 'Dumitrescu', 'Cristina', 3300, 'dumitrescu.cristina@gmail.com', 720456789, null, 112);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, email, nr_telefon, cod_manager, cod_job)values (205, 'Georgescu', 'Mihai', 3100, 'georg.mihai@gmail.com', 720567890, 200, 114);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (206, 'Stanciu', 'Ana', 3400, 'BMW', 'stanciu.ana@gmail.com', 720678901, 205, 113);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (207, 'Iordache', 'Andrei', 3200, 'Motocicleta', 'iordache.andrei@gmail.com', 720789012, 205, 113);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (208, 'Vasile', 'Ioana', 3000, 'Mercedes', 'vasile.ioana@gmail.com', 720890123, 200, 111);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (209, 'Vasile', 'Ioana', 3000, 'Dacia', 'vasile.ioana@gmail.com', 720890123, 200, 111);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (210, 'Vasile', 'Ioana', 3000, 'Motocicleta', 'vasile.ioana@gmail.com', 720890123, 200, 111);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, vehicul, email, nr_telefon, cod_manager, cod_job)values (211, 'Mihai', 'Cristian', 3500, 'Motocicleta', 'mihai.cristian@gmail.com', 720901234, 205, 113);
+insert into angajat_livrari (cod_ang_liv, nume, prenume, salariu, email, nr_telefon, cod_manager, cod_job)values (212, 'Radu', 'Elena', 3300, 'radu.elena@gmail.com', 720123456, null, 112);
+
+create table meniu(
+cod_meniu number(3) constraint pk_cod_meniu primary key,
+descriere_meniu varchar2(50),
+numar_pagini number(2) not null,
+pret_produs_minim number(2) not null,
+pret_produs_maxim number(2) not null,
+cod_restaurant not null constraint cod2_restaurant_unic unique,
+constraint fk3_cod_restaurant foreign key(cod_restaurant) references restaurant(cod_restaurant) on delete cascade);
+
+insert into meniu (cod_meniu, descriere_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (300, 'Meniu Extra', 4, 15, 40, 100);
+insert into meniu (cod_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (301, 6, 20, 45, 101);
+insert into meniu (cod_meniu, descriere_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (302, 'Meniu editite speciala', 8, 25, 50, 102);
+insert into meniu (cod_meniu, descriere_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (303, 'Meniu fructe de mare', 5, 18, 35, 103);
+insert into meniu (cod_meniu, descriere_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (304, 'Meniu Racoritor de Vara', 3, 10, 25, 104);
+insert into meniu (cod_meniu, descriere_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (305, 'Meniu Extra', 2, 8, 20, 105);
+insert into meniu (cod_meniu, descriere_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (306, 'Meniu oferte limitate', 4, 12, 30, 106);
+insert into meniu (cod_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (307, 3, 15, 40, 107);
+insert into meniu (cod_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant)values (308, 7, 30, 55, 108);
+insert into meniu (cod_meniu, numar_pagini, pret_produs_minim, pret_produs_maxim, cod_restaurant) values (309, 6, 25, 50, 109);
+
+create table client(
+cod_client number(5) constraint pk_cod_client primary key,
+nume varchar2(20) not null,
+prenume varchar2(20) not null,
+telefon_client number(12) not null,
+cod_meniu number(3),
+constraint fk_cod_meniu foreign key(cod_meniu) references meniu(cod_meniu) on delete cascade);
+
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10000, 'Popescu', 'Ana', 720123456, 300);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10001, 'Ionescu', 'Mihai', 720234567, 304);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10002, 'Constantinescu', 'Maria', 720345678, 305);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10003, 'Dumitrescu', 'Ion', 720456789, 300);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10004, 'Georgescu', 'Elena', 720567890, 304);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10005, 'Stanciu', 'Radu', 720678901, 305);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10006, 'Iordache', 'Andreea', 720789012, 300);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10007, 'Vasile', 'Gabriel', 720890123, 304);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10008, 'Mihai', 'Cristina', 720901234, 305);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10009, 'Radu', 'Andrei', 720123456, 300);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10010, 'Popescu', 'Ioana', 720234567, 304);
+insert into client (cod_client, nume, prenume, telefon_client, cod_meniu) values (10011, 'Ionescu', 'Catalin', 720345678, 305);
+insert into client (cod_client, nume, prenume, telefon_client) values (10012, 'Constantinescu', 'Ana', 720456789);
+insert into client (cod_client, nume, prenume, telefon_client) values (10013, 'Dumitrescu', 'Elena', 720567890);
+insert into client (cod_client, nume, prenume, telefon_client) values (10014, 'Georgescu', 'Ionut', 720678901);
+
+create table rezervare(
+cod_rezervare number(4) constraint pk_cod_rezervare primary key,
+data_rezervare date not null,
+nume_client varchar2(20) not null,
+nr_telefon number(12) not null,
+cod_restaurant number(3) not null,
+constraint fk4_cod_restaurant foreign key(cod_restaurant) references restaurant(cod_restaurant) on delete cascade,
+cod_client number(5) not null,
+constraint fk_cod_client foreign key(cod_client) references client(cod_client) on delete cascade);
+
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1000, TO_DATE('2024-06-15', 'YYYY-MM-DD'), 'Popescu Ana', 720123456, 104, 10000);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1001, TO_DATE('2024-06-16', 'YYYY-MM-DD'), 'Ionescu Mihai', 720234567, 105, 10001);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1002, TO_DATE('2024-06-17', 'YYYY-MM-DD'), 'Constantinescu Maria', 720345678, 100, 10002);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1003, TO_DATE('2024-06-18', 'YYYY-MM-DD'), 'Dumitrescu Ion', 720456789, 100, 10003);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1004, TO_DATE('2024-06-19', 'YYYY-MM-DD'), 'Georgescu Elena', 720567890, 104, 10004);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1005, TO_DATE('2024-06-20', 'YYYY-MM-DD'), 'Stanciu Radu', 720678901, 105, 10005);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1006, TO_DATE('2024-06-21', 'YYYY-MM-DD'), 'Iordache Andreea', 720789012, 100, 10006);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1007, TO_DATE('2024-06-22', 'YYYY-MM-DD'), 'Vasile Gabriel', 720890123, 104, 10007);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1008, TO_DATE('2024-06-23', 'YYYY-MM-DD'), 'Mihai Cristina', 720901234, 100, 10008);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1009, TO_DATE('2024-06-24', 'YYYY-MM-DD'), 'Radu Andrei', 720123456, 105, 10009);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1010, TO_DATE('2024-06-25', 'YYYY-MM-DD'), 'Popescu Ana', 720123456, 104, 10000);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1011, TO_DATE('2024-06-26', 'YYYY-MM-DD'), 'Popescu Ana', 720123456, 104, 10000);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1012, TO_DATE('2024-06-27', 'YYYY-MM-DD'), 'Ionescu Mihai', 720234567, 105, 10001);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1013, TO_DATE('2024-06-28', 'YYYY-MM-DD'), 'Ionescu Mihai', 720234567, 100, 10001);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1014, TO_DATE('2024-06-29', 'YYYY-MM-DD'), 'Constantinescu Maria', 720345678, 104, 10002);
+insert into rezervare (cod_rezervare, data_rezervare, nume_client, nr_telefon, cod_restaurant, cod_client)values (1015, TO_DATE('2024-06-30', 'YYYY-MM-DD'), 'Constantinescu Maria', 720345678, 100, 10002);
+
+create table comanda(
+cod_comanda number(5) constraint pk_cod_comanda primary key,
+pret number(4) not null,
+nr_produse number(2) not null,
+cod_client number(5) not null,
+constraint fk2_cod_client foreign key(cod_client) references client(cod_client) on delete cascade);
+
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10000, 150, 9, 10000);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10001, 120, 5, 10001);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10002, 200, 14, 10002);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10003, 90, 6, 10006);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10004, 210, 12, 10007);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10005, 70, 3, 10008);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10006, 130, 7, 10009);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10007, 70, 7, 10009);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10008, 30, 2, 10009);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10009, 100, 8, 10000);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10010, 20, 1, 10000);
+insert into comanda (cod_comanda, pret, nr_produse, cod_client) values (10012, 75, 4, 10001);
+
+create table adresa_livrare(
+cod_adresa number(5) constraint pk_cod_adresa primary key,
+strada varchar2(20) not null,
+nr_strada number(5) not null);
+
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10000, 'Strada Mihai Viteazu', 10);
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10001, 'Blvd. Republicii', 25);
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10002, 'Strada Libertă?ii', 15);
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10003, 'Aleea Crângului', 8);
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10004, 'Blvd. 1 Decembrie', 45);
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10005, 'Strada Trandafirilor', 30);
+insert into adresa_livrare (cod_adresa, strada, nr_strada) values (10006, 'Aleea Fagilor', 12);
+
+
+create table Livrare(
+durata_estimativa number(3) not null,
+cod_comanda number(5),
+cod_adresa number (5),
+cod_ang_liv number(3),
+constraint pk_livrare primary key(cod_comanda, cod_adresa, cod_ang_liv));
+
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (30, 10000, 10000, 201);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (45, 10001, 10001, 202);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (35, 10002, 10002, 202);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (25, 10003, 10003, 203);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (40, 10004, 10004, 208);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (50, 10005, 10005, 209);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (30, 10006, 10006, 210);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (35, 10007, 10006, 210);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (40, 10008, 10006, 210);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (30, 10009, 10000, 201);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (20, 10010, 10000, 201);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (35, 10011, 10001, 202);
+
+
+---!!!Modificare create table Livrare!!!:
+
+create table Livrare(
+durata_estimativa number(3) not null,
+cod_comanda number(5),
+constraint fk5_cod_comanda foreign key(cod_comanda) references comanda(cod_comanda),
+cod_adresa number (5),
+constraint fk5_cod_adresa foreign key(cod_adresa) references adresa_livrare(cod_adresa),
+cod_ang_liv number(3),
+constraint fk5_cod_ang_liv foreign key(cod_ang_liv) references angajat_livrari(cod_ang_liv),
+constraint pk5_livrare primary key(cod_comanda, cod_adresa, cod_ang_liv));
+
+
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (30, 10000, 10000, 201);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (45, 10001, 10001, 202);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (35, 10002, 10002, 202);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (25, 10003, 10003, 203);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (40, 10004, 10004, 208);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (50, 10005, 10005, 209);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (30, 10006, 10006, 210);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (35, 10007, 10006, 210);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (40, 10008, 10006, 210);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (30, 10009, 10000, 201);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (20, 10010, 10000, 201);
+insert into livrare (durata_estimativa, cod_comanda, cod_adresa, cod_ang_liv) values (35, 10011, 10001, 202);
